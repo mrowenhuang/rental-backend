@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 import User from "../models/User.js";
+import protectRoute from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -123,6 +124,19 @@ router.post("/login", async (req, res) => {
     console.log("Error in login", error);
     res.status(500).json({
       message: "internar server error",
+    });
+  }
+});
+
+router.get("/me", protectRoute, async (req, res) => {
+  try {
+    res.status(200).json({
+      user: req.user,
+    });
+  } catch (error) {
+    console.error("Error in /me:", error.message);
+    res.status(500).json({
+      message: "Internal Server Error",
     });
   }
 });
